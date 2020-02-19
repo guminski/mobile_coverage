@@ -3,6 +3,13 @@ from django.contrib.gis.db import models
 
 
 class NetworkOperator(models.Model):
+    OPERATOR_NAMES = {
+        20801: 'Orange',
+        20810: 'SFR',
+        20815: 'Free',
+        20820: 'Bouygue',
+    }
+
     name = models.CharField(_('Operator\'s name'), max_length=255, blank=True, null=True)
     network_code = models.PositiveSmallIntegerField(null=False, unique=True)
 
@@ -27,3 +34,7 @@ class Measurement(models.Model):
 
     def __str__(self):
         return str(self.operator)
+
+    class Meta:
+        verbose_name = _('Measurement')
+        verbose_name_plural = _('Measurements')
