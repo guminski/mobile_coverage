@@ -1,6 +1,7 @@
 FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 
+RUN apt-get update && apt-get install gdal-bin -y
 # Allows docker to cache installed dependencies between builds
 COPY ./requirements.txt requirements.txt
 RUN pip install -r requirements.txt

@@ -15,7 +15,7 @@ class Common(Configuration):
         'django.contrib.sessions',
         'django.contrib.messages',
         'django.contrib.staticfiles',
-
+        'django.contrib.gis',
 
         # Third party apps
         'rest_framework',            # utilities for rest apis
@@ -24,6 +24,7 @@ class Common(Configuration):
 
         # Your apps
         'mobile_coverage.users',
+        'search_api',
 
     )
 
