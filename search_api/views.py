@@ -11,6 +11,11 @@ from rest_framework.viewsets import (
 
 from .models import Measurement, NetworkOperator
 
+class AddressNotFound(APIException):
+    status_code = 400
+    default_detail = 'Address not found'
+    default_code = 'address_not_found'
+
 
 class QueryParamRequired(APIException):
     status_code = 400
@@ -27,6 +32,7 @@ class ServiceUnavailable(APIException):
 class SearchApiView(GenericViewSet):
     """
     Searching view
+    ?address=Paris parameter required
     """
     model = NetworkOperator
     queryset = Measurement.objects.all()
@@ -39,9 +45,9 @@ class SearchApiView(GenericViewSet):
         return search_string
 
     def get_point_obj(self):
-        return Point(self.get_coords_from_api(), srid=2154)
+        return Point(self.get_coords_from_address(), srid=2154)
 
-    def get_coords_from_api(self):
+    def get_coords_from_address(self):
         params = {
             'limit': 1,
             'q': self.get_search_param(),
@@ -56,10 +62,10 @@ class SearchApiView(GenericViewSet):
 
         content = res.json().get('features', [])
 
-        try:
-            coords = content[0]['geometry']['coordinates']
-        except (KeyError, IndexError):
-            raise ServiceUnavailable
+        if not content:
+            raise AddressNotFound
+
+        coords = content[0]['geometry']['coordinates']
         return coords
 
     def search(self, request):
@@ -77,5 +83,4 @@ class SearchApiView(GenericViewSet):
                 '2G': measurement.coverage_2G, '3G': measurement.coverage_3G, '4G': measurement.coverage_4G
             } for measurement in found_measurements
         }
-
         return Response(res, status=status.HTTP_200_OK)
