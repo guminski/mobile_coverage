@@ -7,13 +7,6 @@ from django.contrib.gis.geos import Point
 class Command(BaseCommand):
     help = "Loads data from CSV file to db"
 
-    OPERATOR_NAMES = {
-        20801: 'Orange',
-        20810: 'SFR',
-        20815: 'Free',
-        20820: 'Bouygue',
-    }
-
     def handle(self, *args, **options):
         network_codes = set()
 
@@ -26,7 +19,7 @@ class Command(BaseCommand):
         for code in network_codes:
             obj, created = NetworkOperator.objects.get_or_create(
                 network_code=code,
-                name=self.OPERATOR_NAMES.get(code, '')
+                name=NetworkOperator.OPERATOR_NAMES.get(code, '')
             )
             operators[code] = obj
 
@@ -46,4 +39,4 @@ class Command(BaseCommand):
                         coverage_4G=True if row['4G'] == '1' else False,
                     ))
             Measurement.objects.bulk_create(to_create, batch_size=2000)
-            self.stdout.write(self.style.SUCCESS(f'--- Loading data finished ---'))
+            self.stdout.write(self.style.SUCCESS('--- Loading data finished ---'))

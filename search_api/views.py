@@ -11,6 +11,7 @@ from rest_framework.viewsets import (
 
 from .models import Measurement, NetworkOperator
 
+
 class AddressNotFound(APIException):
     status_code = 400
     default_detail = 'Address not found'
@@ -34,9 +35,6 @@ class SearchApiView(GenericViewSet):
     Searching view
     ?address=Paris parameter required
     """
-    model = NetworkOperator
-    queryset = Measurement.objects.all()
-    pagination_class = None
 
     def get_search_param(self):
         search_string = self.request.query_params.get('address', '')
